@@ -1,8 +1,8 @@
 <!doctpye html>
-
 <body>
 <canvas id="gameCanvas" width= "800" height="800"></canvas>
     <script>
+    
     var canvas, canvasContext;
         
         window.onload = function() {
@@ -16,7 +16,8 @@
             
             setInterval(mainloop, 1000 / 50)
         }
-
+        
+        
     
         // player
         var playerXpos = 380;
@@ -32,20 +33,34 @@
         const RIGHT_KEY = 39;
         
         // NPC
-        var enemyXpos = 50;
+        var enemyXpos = 51;
         var enemyYpos = 50;
-        const ENEMY_HEIGHT = 45;
-        const ENEMY_WIDTH = 45;
+        var enemyXspeed = 5;
+        var enemyYspeed = 20;
+        const ENEMY_SIZE = 45; 
         
+        var enemies = [];
+        
+        function makeEnemy(){
+        const ENEMY_SIZE = 45; 
+        var enemyXpos 
+         
+            var enemyXspeed = 5;
+            var enemyYspeed = 5;
+        }
+        
+        //bullet
+        var bulletHeight = 30;
+        var bulletWidth = 10;
 
         
         function mainloop() {
             colorRect(0,0, canvas.width, canvas.height,'black');
             colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red');
-            colorRect(enemyXpos, enemyYpos, ENEMY_WIDTH, ENEMY_HEIGHT, 'blue');
+            colorRect(enemyXpos, enemyYpos, ENEMY_SIZE, ENEMY_SIZE, 'blue');
 //            colorRect(enemyXpos, enemyYpos, ENEMY_WIDTH, ENEMY_HEIGHT, 'blue');
             playerMove();
-            
+            enemyMove();
         }
         
         
@@ -74,7 +89,7 @@
                     playerXpos += playerXspeed;
                 }
                 if (leftkeyPressed) {
-                    playerXpos -= playerXspeed; }
+                    playerXpos -=  playerXspeed; }
                     if(playerXpos < 0 - PLAYER_SIZE){
                         playerXpos = canvas.width - PLAYER_SIZE; 
                     }
@@ -89,6 +104,27 @@
         
 
         
+        function bulletHit(){
+        if(enemyYpos + ENEMY_SIZE > playerYpos && enemyYpos < playerYpos + PLAYER_SIZE && ENEMY_SIZE > playerXpos && enemyXpos < playerXpos + PLAYER_SIZE){
+            alert('you deaded');
+            }     
+        }
+        
+        function enemyMove(){
+            enemyXpos += enemyXspeed;
+            if(enemyXpos > canvas.width - (2 * ENEMY_SIZE)){
+                enemyXspeed = -5;
+            }
+            if(enemyXpos < 51){
+                enemyXspeed = 5;
+            }
+            if(enemyXpos > canvas.width - 50){
+                enemyYpos += enemyYspeed;
+            }
+            if(enemyXpos < 51){
+                enemyYpos += enemyYspeed;
+            }
+        }
         
         
         
