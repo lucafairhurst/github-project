@@ -1,133 +1,188 @@
 <!doctpye html>
-<body>
-<canvas id="gameCanvas" width= "800" height="800"></canvas>
-    <script>
-    
-    var canvas, canvasContext;
-        
-        window.onload = function() {
-            
-            canvas = document.getElementById('gameCanvas');
-            canvasContext = canvas.getContext('2d')
-            
-            document.addEventListener('keydown', keyPressed);
-            document.addEventListener('keyup', keyReleased);
-            
-            
-            setInterval(mainloop, 1000 / 50)
-        }
-        
-        
-    
-        // player
-        var playerXpos = 380;
-        var playerYpos = 750;
-        const PLAYER_SIZE = 23;
-        var  playerXspeed = 5;
-        var  playerYspeed = 4;
-        
-        var leftkeyPressed = false;
-        var rightkeyPressed = false;
-        
-        const LEFT_KEY = 37;
-        const RIGHT_KEY = 39;
-        
-        // NPC
-        var enemyXpos = 51;
-        var enemyYpos = 50;
-        var enemyXspeed = 5;
-        var enemyYspeed = 20;
-        const ENEMY_SIZE = 45; 
-        
-        var enemies = [];
-        
-        function makeEnemy(){
-        const ENEMY_SIZE = 45; 
-        var enemyXpos 
-         
-            var enemyXspeed = 5;
-            var enemyYspeed = 5;
-        }
-        
-        //bullet
-        var bulletHeight = 30;
-        var bulletWidth = 10;
 
-        
-        function mainloop() {
-            colorRect(0,0, canvas.width, canvas.height,'black');
-            colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red');
-            colorRect(enemyXpos, enemyYpos, ENEMY_SIZE, ENEMY_SIZE, 'blue');
-//            colorRect(enemyXpos, enemyYpos, ENEMY_WIDTH, ENEMY_HEIGHT, 'blue');
-            playerMove();
-            enemyMove();
-        }
-        
-        
-        function keyPressed(evt) {
-            if (evt.keyCode == LEFT_KEY) {//
-                leftkeyPressed = true;
+    <body>
+        <canvas id="gameCanvas" width="800" height="800"></canvas>
+        <script>
+            var canvas, canvasContext;
+
+            window.onload = function() {
+
+                canvas = document.getElementById('gameCanvas');
+                canvasContext = canvas.getContext('2d')
+
+                document.addEventListener('keydown', keyPressed);
+                document.addEventListener('keyup', keyReleased);
+
+
+                setInterval(mainloop, 1000 / 50)
             }
-            
-            if (evt.keyCode == RIGHT_KEY) { //
-                rightkeyPressed = true;
+
+
+
+            // player
+            var playerXpos = 380;
+            var playerYpos = 750;
+            const PLAYER_SIZE = 23;
+            var playerXspeed = 5;
+            var playerYspeed = 4;
+
+            var leftkeyPressed = false;
+            var rightkeyPressed = false;
+            var spacekeyPressed = false;
+            var shoot = false;
+            var shooting = false;
+
+            const LEFT_KEY = 37;
+            const RIGHT_KEY = 39;
+            const SPACE_KEY = 32;
+
+            // NPC
+            var enemyXpos = 51;
+            var enemyYpos = 50;
+            var enemyXspeed = 5;
+            var enemyYspeed = 20;
+            const ENEMY_SIZE = 45;
+
+            var enemies = [];
+
+            function makeEnemy() {
+                const ENEMY_SIZE = 45;
+                var enemyXpos
+
+                var enemyXspeed = 5;
+                var enemyYspeed = 5;
             }
-        }
-        
-        function keyReleased(evt) {
-            if (evt.keyCode == LEFT_KEY) { //
-                leftkeyPressed = false;
+
+            //bullet
+            var bulletHeight = 30;
+            var bulletWidth = 10;
+
+            var back = new Image;
+            back.src = 'images/bg.jpg';
+
+
+
+            var bulletXpos = 0;
+            var bulletYpos = 0;
+            var bulletYspeed = 10;
+            var BULLET_SIZE = 8;
+
+
+
+            function mainloop() {
+                drawImg(back, 0, 0, canvas.width, canvas.height);
+                colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red');
+                colorRect(enemyXpos, enemyYpos, ENEMY_SIZE, ENEMY_SIZE, 'blue');
+                colorRect(bulletXpos, bulletYpos, BULLET_SIZE, BULLET_SIZE, 'white');
+                //            colorRect(enemyXpos, enemyYpos, ENEMY_WIDTH, ENEMY_HEIGHT, 'blue');
+
+                playerMove();
+                enemyMove();
+                bulletShoot();
             }
-            
-            if (evt.keyCode == RIGHT_KEY) { //
-                rightkeyPressed = false;
+
+
+            function keyPressed(evt) {
+                if (evt.keyCode == LEFT_KEY) { //
+                    leftkeyPressed = true;
+                }
+
+                if (evt.keyCode == RIGHT_KEY) { //
+                    rightkeyPressed = true;
+                }
+                if (evt.keyCode == SPACE_KEY) { //
+                    shoot = true;
+                    bulletShoot();
+                }
             }
-        }
-        
-         function playerMove() {
+
+            function keyReleased(evt) {
+                if (evt.keyCode == LEFT_KEY) { //
+                    leftkeyPressed = false;
+                }
+
+                if (evt.keyCode == RIGHT_KEY) { //
+                    rightkeyPressed = false;
+                }
+                if (evt.keyCode == SPACE_KEY) { //
+                    spacekeyPressed = false;
+                }
+            }
+
+            function playerMove() {
                 if (rightkeyPressed && playerXpos + PLAYER_SIZE < canvas.width) {
                     playerXpos += playerXspeed;
                 }
                 if (leftkeyPressed) {
-                    playerXpos -=  playerXspeed; }
-                    if(playerXpos < 0 - PLAYER_SIZE){
-                        playerXpos = canvas.width - PLAYER_SIZE; 
+                    playerXpos -= playerXspeed;
+                }
+                if (playerXpos < 0 - PLAYER_SIZE) {
+                    playerXpos = canvas.width - PLAYER_SIZE;
+
+
+                }
+
+                var hit = false;
+
+                function bulletShoot() {
+                    console.log('shoot')
+                    if (shoot && shooting == false) {
+                        bulletXpos = playerXpos + PLAYER_SIZE / 2 - bulletWidth / 2;
+                        bulletYpos = playerYpos;
+                        shoot = false;
+                        shooting = true;
+                    }
+                    if (shooting && hit == false) {
+                        bulletYpos -= bulletYspeed;
+                        if (bulletYpos < 0) {
+                            hit = true;
+                            shooting = false;
+                        }
+                        if (bulletXpos > enemyXpos && bulletXpos + BULLET_SIZE < enemyXpos + ENEMY_SIZE && bulletYpos > enemyYpos && bulletYpos + BULLET_SIZE < enemyYpos + ENEMY_SIZE) {
+                            hit = true;
+                            shooting = false;
+                        }
+                    }
+                    if (hit && shooting == false) {
+                        bulletXpos = 0;
+                        bulletYpos = 0;
+                        hit = false;
+                    }
+
+                }
+
+                function colorRect(x, y, w, h, c) {
+                    canvasContext.fillStyle = c;
+                    canvasContext.fillRect(x, y, w, h);
+                }
+
+                function drawImg(src, x, y, w, h) {
+                    canvasContext.drawImage(src, x, y, w, h);
+                }
+
+
+
+                function bulletHit() {
+                    if (enemyYpos + ENEMY_SIZE > playerYpos && enemyYpos < playerYpos + PLAYER_SIZE && ENEMY_SIZE > playerXpos && enemyXpos < playerXpos + PLAYER_SIZE) {
+                        alert('you deaded');
                     }
                 }
-         
-             
-        function colorRect(x,y,w,h,c) {
-            canvasContext.fillStyle = c;
-            canvasContext.fillRect(x,y,w,h);
-            
-        }
-        
 
-        
-        function bulletHit(){
-        if(enemyYpos + ENEMY_SIZE > playerYpos && enemyYpos < playerYpos + PLAYER_SIZE && ENEMY_SIZE > playerXpos && enemyXpos < playerXpos + PLAYER_SIZE){
-            alert('you deaded');
-            }     
-        }
-        
-        function enemyMove(){
-            enemyXpos += enemyXspeed;
-            if(enemyXpos > canvas.width - (2 * ENEMY_SIZE)){
-                enemyXspeed = -5;
-            }
-            if(enemyXpos < 51){
-                enemyXspeed = 5;
-            }
-            if(enemyXpos > canvas.width - 50){
-                enemyYpos += enemyYspeed;
-            }
-            if(enemyXpos < 51){
-                enemyYpos += enemyYspeed;
-            }
-        }
-        
-        
-        
-    
-    </script>
-</body>
+                function enemyMove() {
+                    enemyXpos += enemyXspeed;
+                    if (enemyXpos > canvas.width - (2 * ENEMY_SIZE)) {
+                        enemyXspeed = -5;
+                    }
+                    if (enemyXpos < 51) {
+                        enemyXspeed = 5;
+                    }
+                    if (enemyXpos > canvas.width - 50) {
+                        enemyYpos += enemyYspeed;
+                    }
+                    if (enemyXpos < 51) {
+                        enemyYpos += enemyYspeed;
+                    }
+                }
+
+        </script>
+    </body>
