@@ -48,13 +48,15 @@
             const ENEMY_SIZE = 45;
 
             var enemies = [];
+            
+            var gameRun = true;
 
             function makeEnemy() {
                 const ENEMY_SIZE = 45;
                 var enemyXpos = Math.floor(Math.random()*(canvas.width - ENEMY_SIZE))+ENEMY_SIZE;
                 var enemyYpos = 0 + ENEMY_SIZE;
                 var enemyXspeed = Math.floor(Math.random()*(10 - 2))+2;
-                var enemyYspeed = Math.floor(Math.random()*(10 - 2))+2;
+                var enemyYspeed = Math.floor(Math.random()*(2 - 1))+1;
                 
                 enemy = {
                     enemyXpos: enemyXpos,
@@ -71,6 +73,33 @@
             function drawEnemies(){
                 enemies.forEach(function(enemy,i,array){
                     colorRect(enemy.enemyXpos,enemy.enemyYpos,enemy.ENEMY_SIZE,enemy.ENEMY_SIZE,'red');
+                });
+            }
+            
+            
+            function moveEnemies(){
+                enemies.forEach(function(enemy,i,array){
+                    enemy.enemyYpos += enemy.enemyYspeed;
+                    enemy.enemyXpos += enemy.enemyXspeed;
+                    
+                    if(enemy.enemyXpos + enemy.ENEMY_SIZE > canvas.width){
+                       enemy.enemyXspeed *= -1;
+                    }
+                    if(enemy.enemyXpos < 0){
+                       enemy.enemyXspeed *= -1;
+            
+                    }
+                    
+                    if(enemy.enemyYpos > canvas.height){
+                       gameRun = false;
+                    }
+                    
+                    if (bulletXpos > enemy.enemyXpos && bulletXpos + BULLET_SIZE < enemy.enemyXpos + enemy.ENEMY_SIZE && bulletYpos > enemy.enemyYpos && bulletYpos + BULLET_SIZE < enemy.enemyYpos + enemy.ENEMY_SIZE) {
+                        hit = true;
+                        shooting = false;
+                        delete enemies[i];
+                    }
+                    
                 });
             }
 
@@ -116,16 +145,22 @@
             }
             
             function mainloop() {
-                drawImg(back, 0, 0, canvas.width, canvas.height);
-                colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red');
-                colorRect(enemyXpos, enemyYpos, ENEMY_SIZE, ENEMY_SIZE, 'blue');
-                colorRect(bulletXpos, bulletYpos, BULLET_SIZE, BULLET_SIZE, 'white');
-                //            colorRect(enemyXpos, enemyYpos, ENEMY_WIDTH, ENEMY_HEIGHT, 'blue');
+                if(gameRun){
+                   
+                    drawImg(back, 0, 0, canvas.width, canvas.height);
+                    colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red');
+                    colorRect(enemyXpos, enemyYpos, ENEMY_SIZE, ENEMY_SIZE, 'blue');
+                    colorRect(bulletXpos, bulletYpos, BULLET_SIZE, BULLET_SIZE, 'white');
+                    //            colorRect(enemyXpos, enemyYpos, ENEMY_WIDTH, ENEMY_HEIGHT, 'blue');
 
-                playerMove();
-                enemyMove();
-                bulletShoot();
-                drawEnemies();
+                    playerMove();
+                    enemyMove();
+                    bulletShoot();
+                    drawEnemies();
+                    moveEnemies();
+                } else {
+                      colorRect(0, 0, canvas.width, canvas.height, 'red');
+                }
             }
 
 
