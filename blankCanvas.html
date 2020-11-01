@@ -13,6 +13,10 @@
                 document.addEventListener('keydown', keyPressed);
                 document.addEventListener('keyup', keyReleased);
 
+                for(var i =0; i < 20; i++){
+                    makeEnemy();
+                }
+                
 
                 setInterval(mainloop, 1000 / 50)
             }
@@ -47,10 +51,21 @@
 
             function makeEnemy() {
                 const ENEMY_SIZE = 45;
-                var enemyXpos
-
-                var enemyXspeed = 5;
-                var enemyYspeed = 5;
+                var enemyXpos = Math.floor(Math.random()*(canvas.width - ENEMY_SIZE))+ENEMY_SIZE;
+                var enemyYpos = 0 - ENEMY_SIZE;
+                var enemyXspeed = Math.floor(Math.random()*(10 - 2))+2;
+                var enemyYspeed = Math.floor(Math.random()*(10 - 2))+2;
+                
+                enemy = {
+                    enemyXpos: enemyXpos,
+                    enemyYpos: enemyYpos,
+                    ENEMY_SIZE: ENEMY_SIZE,
+                    enemyXspeed: enemyXspeed,
+                    enemyYspeed: enemyYspeed
+                }
+                
+                enemies.push(enemy);
+                
             }
 
             //bullet
@@ -66,9 +81,34 @@
             var bulletYpos = 0;
             var bulletYspeed = 10;
             var BULLET_SIZE = 8;
+             
+            var userName =  '';
+            
+            while (userName ==''|| userName == null){
+             userName = prompt('what is your name?');
 
-
-
+            }
+            
+            var difficultyLevel =  prompt ('How hard do you want it?','1')
+            
+           difficultyLevel = Number(difficultyLevel)
+            
+            var enemyCount = 0;
+            
+            if(difficultyLevel == 1){
+                enemyCount = 10 }
+            else {
+                enemyCount = 50
+            }  if(difficultyLevel == 2){
+                enemyCount = 20 }
+            else {
+                enemyCount = 50
+            }  if(difficultyLevel == 3){
+                enemyCount = 30 }
+            else {
+                enemyCount = 50
+            }
+            
             function mainloop() {
                 drawImg(back, 0, 0, canvas.width, canvas.height);
                 colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red');
