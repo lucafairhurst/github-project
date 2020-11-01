@@ -52,7 +52,7 @@
             function makeEnemy() {
                 const ENEMY_SIZE = 45;
                 var enemyXpos = Math.floor(Math.random()*(canvas.width - ENEMY_SIZE))+ENEMY_SIZE;
-                var enemyYpos = 0 - ENEMY_SIZE;
+                var enemyYpos = 0 + ENEMY_SIZE;
                 var enemyXspeed = Math.floor(Math.random()*(10 - 2))+2;
                 var enemyYspeed = Math.floor(Math.random()*(10 - 2))+2;
                 
@@ -66,6 +66,12 @@
                 
                 enemies.push(enemy);
                 
+            }
+            
+            function drawEnemies(){
+                enemies.forEach(function(enemy,i,array){
+                    colorRect(enemy.enemyXpos,enemy.enemyYpos,enemy.ENEMY_SIZE,enemy.ENEMY_SIZE,'red');
+                });
             }
 
             //bullet
@@ -119,6 +125,7 @@
                 playerMove();
                 enemyMove();
                 bulletShoot();
+                drawEnemies();
             }
 
 
@@ -201,6 +208,7 @@
                 }
 
 
+                
 
                 function bulletHit() {
                     if (enemyYpos + ENEMY_SIZE > playerYpos && enemyYpos < playerYpos + PLAYER_SIZE && ENEMY_SIZE > playerXpos && enemyXpos < playerXpos + PLAYER_SIZE) {
